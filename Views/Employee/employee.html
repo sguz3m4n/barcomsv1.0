@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html>
+    <head>        
+        { head }
+        <script type="text/javascript">
+            $(document).ready(function (e) {
+
+                /*var test = 1;
+                 $('#employee').submit(function () {
+                 alert("hello");
+                 });*/
+
+            });
+        </script>
+    </head>
+    <body class="">
+        <div class="wrapper">
+            <header class="page-header">
+                <nav class="navbar mega-menu" role="navigation">
+                    <div class="container-fluid">
+                        <div class="clearfix navbar-fixed-top">
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                            </button>
+                            <a class="page-logo" id="index" href="/index.php">
+                                <img src="../assets/global/img/customs logo no back.png" alt="" height="400"/>                          
+                                <img src="../assets/global/img/OVERTIME-APP-LOGO.png" alt=""/>
+                            </a>
+                            <div class="topbar-actions">
+                                <div class="btn-group-img btn-group">
+                                    <button class="btn btn-sm md-skip dropdown-toggle" type="button" data-toggle="dropdown" data-close-others="true" data-hover="dropdown">
+                                        <span>Hi,<?php echo $_SESSION['firstname']; ?></span>
+                                    </button>
+                                    <ul class="dropdown-menu-v2" role="menu">
+                                        <li>
+                                            <a href="/changepassword">
+                                                <i class="icon-user"></i> Change Password
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/logout">
+                                                <i class="icon-key"></i> Log Out 
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="">
+                                                <i class="icon-briefcase"></i> <?php echo $_SESSION['user_roles']; ?>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                        
+                        </div>                       
+                        <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse"  >
+                            <ul class="nav navbar-nav" >
+                                <li class="dropdown dropdown-fw dropdown-fw-disabled active open selected">
+                                    <a class="text-uppercase" href="/index.php">
+                                        <i class="icon-home"></i> Home 
+                                    </a>      
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/employee/edit"><i class="glyphicon glyphicon-eye-open"></i>View &nbsp; <i class="glyphicon glyphicon-pencil"></i>Edit Employee</a>
+                                </li>
+                            </ul>
+                        </div>                      
+                    </div>                
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <div class="page-content">
+                    <div class="page-content-row">
+                        <div class="col-md-3">
+                            <div class="page-sidebar">
+                                <div class=" col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 green" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" class="glyphicon glyphicon-flash"> { activeemployees }</span>
+                                            </div>
+                                            <div class="desc"> Active Employees </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 blue" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" class="glyphicon glyphicon-flash">112</span>
+                                            </div>
+                                            <div class="desc"> Active Companies </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <center>
+                                    <a class="btn btn-outline blue" href="../../index.php">back to main page</a>    
+                                </center>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="page-content-col-8">
+                                <div class="portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="caption"><em class="fa fa-group"></em><h4>Enter Employee Details</h4></div>
+                                        <div class="tools">
+                                            <a title="" class="collapse" href="javascript:;" data-original-title=""> </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body form">
+                                        <form id="employee" name="employee" method="post" >
+                                            <div class="form-group">
+                                                <div class="row center-block panel-body">
+                                                    <div class="col-xs-4">
+                                                        <label>National Registration Number</label>
+                                                        <input type="text" class="form-control" name="Natregno" placeholder="**********" autocomplete="off" value="{ Natregno }" >
+
+                                                    </div>
+                                                    <div class="col-xs-3">
+                                                        <label>Date of Birth</label>
+                                                        <input type="text" class="form-control" name="DateOfBirth" placeholder="YYYY-MM-DD" autocomplete="off"  id="datepicker" >
+                                                        <script>
+                                                            $(function () {
+                                                                $("#datepicker").datepicker({dateFormat: 'yy-mm-dd'});
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <label>Gender</label>
+                                                        <select name="Gender" class="form-control" id="Gender">
+                                                            <option>Select</option>
+                                                            <option>Male</option>
+                                                            <option>Female</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                        <label>NIS Number</label>
+                                                        <input type="text" class="form-control" name="NISNo" placeholder="******" autocomplete="off" value="{ NISNo }"  />
+                                                    </div>
+                                                    <div class="col-xs-6">
+                                                        <label>Post</label>
+                                                        <select name="RoleName" class="form-control" id="RoleName" onchange="myFunction()">
+                                                            <option></option>
+                                                            { roles }
+                                                        </select>
+                                                        <input type="hidden" name="RateCode" id="RateCode"   />
+                                                        <script>
+                                                            function myFunction() {
+                                                                //alert("Hello! I am an alert box!!");
+                                                                var mylist = document.getElementById("RoleName");
+                                                                document.getElementById("RateCode").value = mylist.options[mylist.selectedIndex].id;
+                                                            }
+                                                        </script>
+                                                    </div>
+                                                </div>
+                                                <div class="row center-block panel-body">
+                                                    <div class="col-xs-2">
+                                                        <label>Title</label>
+                                                        <input type="text" class="form-control" name="Title" placeholder="" value="{ Title }"   >
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                        <label>First Name</label>
+                                                        <input type="text" class="form-control" name="FirstName" placeholder="" autocomplete="off" value="{ FirstName }"  >                                                                
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <label>Initial</label>
+                                                        <input type="text" class="form-control" name="Initial" placeholder="" autocomplete="off" value="{ Initial }"  >
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                        <label>Last Name</label>
+                                                        <input type="text" class="form-control" name="LastName" placeholder="" autocomplete="off" value="{ LastName }"  >
+                                                    </div>
+                                                </div>
+                                                <div class="row center-block panel-body">
+                                                    <div class="col-xs-4">
+                                                        <label>Apt /Home #</label>
+                                                        <input type="text" class="form-control" name="AddressLine1" placeholder="" autocomplete="off" value="{ AddressLine1 }"   >
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                        <label>Street</label>
+                                                        <input type="text" class="form-control" name="AddressLine2" placeholder="" autocomplete="off" value="{ AddressLine2 }"  >
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                        <label>District</label>
+                                                        <input type="text" class="form-control" name="AddressLine3" placeholder="" autocomplete="off" value="{ AddressLine3 }"  > 
+                                                    </div>
+                                                </div>
+                                                <div class="row center-block panel-body">                                                   
+                                                    <div class="col-xs-4">
+                                                        <label>Parish</label>
+                                                        <select name="Parish" class="form-control">
+                                                            <option></option>
+                                                            { parishes }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-3">
+                                                        <label>Postal Code</label>
+                                                        <input type="text" class="form-control" name="PostalCode" placeholder="" autocomplete="off" value="{ PostalCode }" />
+                                                    </div>
+                                                </div>                                                        
+                                                <div class="row center-block panel-body">
+                                                    <div class="col-xs-4">
+                                                        <label>Work Phone</label>
+                                                        <input type="text" class="form-control" name="WorkPhone" placeholder="888-8888" value="{ WorkPhone }"  />
+                                                        <label>Ext</label>
+                                                        <input type="text" class="form-control" name="Ext" placeholder="" value="{ Ext }"  />
+                                                        <label>Fax</label>
+                                                        <input type="text" class="form-control" name="FaxNum" placeholder="888-8888" value="{ FaxNum }" />                                                               
+                                                    </div>
+                                                    <div class="col-xs-4">
+                                                        <label>Home Phone</label>
+                                                        <input type="text" class="form-control" name="HomePhone" placeholder="888-8888" value="{ HomePhone }" />
+                                                        <label>Mobile Phone</label>
+                                                        <input type="text" class="form-control" name="CellNo" placeholder="888-8888" value="{ CellNo }" />
+                                                        <label>Email</label>
+                                                        <input type="text" class="form-control" name="Email" placeholder="example@domain" autocomplete="off" value="{ Email }"  />
+                                                    </div>
+                                                    <div class="col-xs-4" style="font-size: large">
+                                                        { val_Natregno }  <br> 
+                                                        { val_NISNo }  <br>
+                                                        { val_Unique }
+                                                    </div>
+                                                </div>
+                                                <div class="row center-block panel-body">                                                   
+                                                    <div class="col-xs-6">
+                                                        <label>Notes</label>
+                                                        <textarea name="Notes" id="Notes" rows="4" cols="4" class="form-control" placeholder="Enter any notes here" ></textarea>
+                                                    </div>
+                                                    <div class="col-xs-6">
+
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <center>
+                                                    <button type="submit" class="btn btn-default blue" name="btn-create" id="btn-create"><strong>Create Employee</strong></button>
+                                                </center>
+
+                                            </div>
+                                        </form>  <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        { foot }
+    </body>
+</html>

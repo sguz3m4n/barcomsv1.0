@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        { head }
+        <script type="text/javascript">
+            var offcrcount = 0;
+            var offcrarr = [];
+            var haspx = 'off';
+            var hassubs = 'off';
+
+            $(document).ready(function () {
+
+
+                var submitcontainer = document.getElementById("submitcontrol");
+                var submitcontrol = document.createElement("button");
+                submitcontrol.innerHTML = "Make Payment";
+                submitcontrol.style.display = "none";
+                submitcontrol.setAttribute("type", "submit");
+                submitcontrol.setAttribute("id", "btn-create");
+                submitcontrol.setAttribute("name", "btn-create");
+                submitcontrol.setAttribute("class", "btn btn-default blue");
+
+                submitcontainer.appendChild(submitcontrol);
+
+                var addcontainer = document.getElementById("addcontrols");
+                var adddetails = document.createElement("a");
+                adddetails.style.display = "none";
+                adddetails.innerHTML = "Enter Officer Overtime ";
+                adddetails.setAttribute("id", "adddetails");
+                adddetails.setAttribute("class", "btn btn-default blue");
+
+                addcontainer.appendChild(adddetails);
+
+
+                var addofficer = document.createElement("a");
+                addofficer.style.display = "none";
+                addofficer.innerHTML = "Officer  ";
+                addofficer.setAttribute("id", "addofficer");
+                addofficer.setAttribute("class", "btn btn-default white");
+                var i = document.createElement("i");
+                i.setAttribute("class", "glyphicon glyphicon-plus");
+
+                addofficer.appendChild(i);
+                addcontainer.appendChild(addofficer);
+
+                //Send the populated array to the controller
+                $("#paymentform").submit(function () {
+                    TogglePRNControl();
+                    var key = this.id.toString().trim();
+                    PopulatePanelInfo(key);
+                    $("#paylist").val(JSON.stringify(offcrarr));
+                });
+
+                //Async search and return suggested results based on Company Name or Company ID
+                $('.search-boxcomp input[type="text"]').on("keyup input", function () {
+                    /* Get input value on change */
+                    var inputVal = $(this).val();
+                    var resultDropdown = $(this).siblings(".resultcomp");
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    if (inputVal.length) {
+                        if (isalpha.test(inputVal))
+                        {
+                            $.get("Views/Shared/Controls/CompanySearch/backend-search.php?type=" + "name", {term: inputVal}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        } else
+                        if (isnum.test(inputVal))
+                        {
+                            $.get("Views/Shared/Controls/CompanySearch/backend-search.php?type=" + "companyid", {term: inputVal}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        }
+
+                    } else {
+                        resultDropdown.empty();
+                    }
+                });
+
+                // Set search input value on click of result item Company ONLY
+                $(document).on("click", ".resultcomp p", function () {
+                    $(this).parents(".search-boxcomp").find('input[type="text"]').val($(this).text());
+                    $test = document.getElementById('searchcomp').value;
+                    if ($test == "") {
+                                document.getElementById("txtHintcomp").innerHTML = "";
+                                return;
+                        } else {
+                                if (window.XMLHttpRequest) {
+                                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                                        xmlhttp = new XMLHttpRequest();
+                                } else {
+                                        // code for IE6, IE5
+                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                }
+                                xmlhttp.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                                document.getElementById("txtHintcomp").innerHTML = this.responseText;
+                                $("#PRNNo").hide();
+                                $("#submittercompany").text($("#CompId").val());
+                                $("#submitterbalance").text($("#CompanyBalance").val());
+                                $("#lblBillRef").text($("#BillRef").val());
+                                $("#lblBillFormNum").text($("#BillFormNo").val());
+                                $("#adddetails").show();
+
+                                // Bind the datepickers
+                                $('input#InspectionDate').datepicker({dateFormat: 'yy-mm-dd'});
+                                $('input#InspectionDateStart').datepicker({dateFormat: 'yy-mm-dd'});
+                                $('input#InspectionDateEnd').datepicker({dateFormat: 'yy-mm-dd'});
+                                        }
+                                };
+                        //Open the payment form
+                                xmlhttp.open("GET", "Views/Shared/Controls/CompanySearch/getuserwf.php?q=" + $test, true);
+                                xmlhttp.send();
+                        }
+                    $(this).parent(".result").empty();
+                });
+
+                // Set search input value on click of result item Employee ONLY
+                $(document).on("click", ".result p", function () {
+                    $(this).parents(".search-boxemp1").find('input[type="text"]').val($(this).text());
+                    $test = document.getElementById('searchemp1').value;
+
+                    if ($test == "") {
+                                document.getElementById("txtHint").innerHTML = "";
+                                return;
+                        } else {
+                                if (window.XMLHttpRequest) {
+                                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                                        xmlhttp = new XMLHttpRequest();
+                                } else {
+                                        // code for IE6, IE5
+                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                }
+                                xmlhttp.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+
+                                 document.getElementById("txtHint").innerHTML = this.responseText;
+                                $("#submitteremployee").text($("#Natregno").val());
+                                $("#submitteremployeename").text($("#EmpName").val());
+                                $("#submitterrates").text($("#PayRate").val());
+                                $("#btn-create").show();
+                                $("#addofficer").show();
+                                $("#subsamt").hide();
+                                $("#passnum").hide();
+                                        }
+                                };
+                                xmlhttp.open("GET", "Views/Shared/Controls/EmployeeSearch/getuser-sub.php?q[]=" + $test + "&InspectionDateStart[]=" + $("#InspectionDateStart").val(), true);
+                                xmlhttp.send();
+                        }
+                    $(this).parent(".result").empty();
+                });
+
+                //Toggle on and off PRN text field
+                $(document).on("click", "#IsPRN", function () {
+                    TogglePRNControl();
+                });
+
+                //Toggle on and off Subsistence option
+                $(document).on("click", "#subsistence", function () {
+                    if ($("#subsistence").is(":checked"))
+                    {
+                        hassubs = 'on';
+                        $("#subsamt").show();
+
+                    } else
+                    if (!$("#subsistence").is(":checked"))
+                    {
+                        hassubs = 'off';
+                        $("#subsamt").val("0");
+                        $("#subsamt").hide();
+                    }
+                });
+
+                //Toggle on and off Passenger option
+                $(document).on("click", "#passenger", function () {
+                    if ($("#passenger").is(":checked"))
+                    {
+                        haspx = 'on';
+                        $("#passnum").show();
+
+                    } else
+                    if (!$("#passenger").is(":checked"))
+                    {
+                        haspx = 'off';
+                        $("#passnum").val("0");
+                        $("#passnum").hide();
+                    }
+                });
+
+                //Update array info with panel info
+                $(document).on("mouseleave", "#empinfo", function () {
+                    if (offcrarr.length > 0)
+                    {
+                        var key = $("#Natregno").val();
+                        ToggleControl();
+                        UpdateInfo(key);
+                    } else
+                    {
+
+                    }
+                });
+
+                $(document).on("click", "#addofficer", function () {
+
+                    var pillcontainer = document.getElementById('pillcontainer');
+                    var pillwrapper = document.getElementById('pillwrapper');
+
+                    //create instance of list elements
+                    var pill = document.createElement("li");
+                    var removeicon = document.createElement("span");
+                    removeicon.setAttribute("class", "glyphicon glyphicon-minus");
+                    //pill.setAttribute("id", "officerpill" + offcrcount);
+                    pill.setAttribute("id", $("#Natregno").val());
+
+                    //dynamically create functions
+                    var pillanchor = document.createElement("a");
+                    pillanchor.appendChild(document.createTextNode(document.getElementById("EmpName").value));
+                    pillanchor.appendChild(removeicon);
+                    var offcrrec = new Array();
+                    offcrrec.push(document.getElementById("EmpName").value);
+                    offcrrec.push(document.getElementById("Natregno").value);
+                    offcrrec.push(document.getElementById("hours").value);
+                    offcrrec.push(document.getElementById("distance").value);
+                    offcrrec.push(document.getElementById("passnum").value);
+                    offcrrec.push(document.getElementById("subsamt").value);
+                    offcrrec.push(document.getElementById("PayRate").value);
+                    offcrrec.push(document.getElementById("RateCode").value);
+                    offcrrec.push(haspx);
+                    offcrrec.push(hassubs);
+                    offcrarr.push(offcrrec);
+
+                    pill.appendChild(pillanchor);
+                    pillwrapper.appendChild(pill);
+                    pillcontainer.appendChild(pillwrapper);
+
+                    $(".pillwrapper li").on("click", function () {
+                        //var index = this.id.toString().substring(this.id.toString().length - 1, this.id.toString().length);
+                        var key = this.id.toString().trim();
+                        PopulatePanelInfo(key);
+                    });
+
+                    $(".pillwrapper li").on("dblclick", function () {
+                        //var index = this.id.toString().substring(this.id.toString().length - 1, this.id.toString().length);
+                        var key = this.id.toString().trim();
+                        var elem = document.getElementById(this.id.toString());
+                        elem.parentNode.removeChild(elem);
+                        RemoveInfo(key);
+
+                    });
+
+                });
+
+                //Add the information capture panel to the form
+                $(document).on("click", "#adddetails", function () {
+                    count = 1;
+
+                    //create dynamic instance of payment
+                    var container = document.getElementById('container');
+                    container.setAttribute("class", "col-xs-12");
+
+                    //create instances of div wrappers
+                    var divmid = document.createElement("div");
+                    var divsearch = document.createElement("div");
+                    var divhint = document.createElement("div");
+
+                    //set attributes for div wrappers for bootstrap styling
+                    divhint.setAttribute("class", "result");
+                    divhint.setAttribute("id", "txtHint");
+                    divsearch.setAttribute("class", "search-boxemp" + count)
+                    divmid.setAttribute("class", "col-xs-12");
+
+                    //create officer text control
+                    var offcrinput = document.createElement("input");
+                    offcrinput.name = "officerid" + count;
+                    offcrinput.setAttribute("class", "form-control");
+                    offcrinput.setAttribute("id", "searchemp" + count);
+                    offcrinput.setAttribute("type", "text");
+                    offcrinput.setAttribute("autocomplete", "off");
+                    offcrinput.setAttribute("placeholder", "Search employee name or id...");
+
+                    offcrinput.onkeyup = function () {
+                        /* Get input value on change */
+                        var inputVal = $(this).val();
+                        var resultDropdown = $(this).siblings(".result");
+                        var isnum = /[0-9]/;
+                        var isalpha = /[a-zA-Z]/;
+
+                        if (inputVal.length)
+                        {
+                            if (isalpha.test(inputVal))
+                            {
+                                $.get("Views/Shared/Controls/EmployeeSearch/backend-search.php?type=" + "name", {term: inputVal}).done(function (data) {
+                                    // Display the returned data in browser
+                                    resultDropdown.html(data);
+                                });
+                            } else
+                            if (isnum.test(inputVal))
+                            {
+                                $.get("Views/Shared/Controls/EmployeeSearch/backend-search.php?type=" + "natregno", {term: inputVal}).done(function (data) {
+                                    // Display the returned data in browser
+                                    resultDropdown.html(data);
+                                });
+                            }
+                            $("#adddetails").hide();
+                        } else {
+                            resultDropdown.empty();
+                        }
+                    }
+
+                    //start wrapping and adding
+                    divsearch.appendChild(offcrinput);
+                    divhint.appendChild(document.createElement("p"));
+                    divsearch.appendChild(divhint);
+                    divmid.appendChild(divsearch);
+                    container.appendChild(divmid);
+                });
+
+            });
+
+            function PopulatePanelInfo(key)
+            {
+                var EmpName = document.getElementById("EmpName");
+                var Natregno = document.getElementById("Natregno");
+                var hours = document.getElementById("hours");
+                var distance = document.getElementById("distance");
+                var passnum = document.getElementById("passnum");
+                var subsamt = document.getElementById("subsamt");
+                var PayRate = document.getElementById("PayRate");
+                var RateCode = document.getElementById("RateCode");
+                for (i = 0; i < offcrarr.length; i++) {
+
+                    if (offcrarr[i][1] === key)
+                    {
+                        EmpName.value = offcrarr[i][0].toString();
+                        Natregno.value = offcrarr[i][1].toString();
+                        hours.value = offcrarr[i][2].toString();
+                        distance.value = offcrarr[i][3].toString();
+                        passnum.value = offcrarr[i][4].toString();
+                        subsamt.value = offcrarr[i][5].toString();
+                        PayRate.value = offcrarr[i][6].toString();
+                        RateCode.value = offcrarr[i][7].toString();
+                        haspx = offcrarr[i][8].toString();
+                        hassubs = offcrarr[i][9].toString();
+                    }
+                }
+
+                ToggleControl();
+
+                $("#submitteremployee").text($("#Natregno").val());
+                $("#submitteremployeename").text($("#EmpName").val());
+                $("#submitterrates").text($("#PayRate").val());
+            }
+
+            function RemoveInfo(key)
+            {
+                var indextoremove;
+                for (i = 0; i < offcrarr.length; i++) {
+
+                    if (offcrarr[i][1] === key)
+                    {
+                        indextoremove = i;
+                    }
+                }
+                offcrarr.splice(indextoremove, 1);
+
+            }
+
+            function UpdateInfo(key) {
+
+                for (i = 0; i < offcrarr.length; i++) {
+
+                    if (offcrarr[i][1] === key)
+                    {
+                        var EmpName = document.getElementById("EmpName");
+                        var Natregno = document.getElementById("Natregno");
+                        var hours = document.getElementById("hours");
+                        var distance = document.getElementById("distance");
+                        var passnum = document.getElementById("passnum");
+                        var subsamt = document.getElementById("subsamt");
+                        var PayRate = document.getElementById("PayRate");
+                        var RateCode = document.getElementById("RateCode");
+                        var HasPx = document.getElementById("passenger");
+                        var HasSub = document.getElementById("subsistence");
+                        offcrarr[i][0] = EmpName.value;
+                        offcrarr[i][1] = Natregno.value;
+                        offcrarr[i][2] = hours.value;
+                        offcrarr[i][3] = distance.value;
+                        offcrarr[i][4] = passnum.value;
+                        offcrarr[i][5] = subsamt.value;
+                        offcrarr[i][6] = PayRate.value;
+                        offcrarr[i][7] = RateCode.value;
+                        offcrarr[i][8] = haspx;
+                        offcrarr[i][9] = hassubs;
+
+                        ToggleControl();
+                    }
+                }
+            }
+
+            function TogglePRNControl()
+            {
+                if ($("#IsPRN").is(":checked"))
+                {
+                    if ($("#PRNNo").val() != "")
+                    {
+                        $("#BillRef").val($("#PRNNo").val());
+                    }
+
+                    $("#PRNNo").show();
+                } else
+                if (!$("#IsPRN").is(":checked"))
+                {
+                    $("#PRNNo").hide();
+                    $("#PRNNo").val("");
+                }
+            }
+
+            function ToggleControl()
+            {
+                if (hassubs == "on")
+                {
+                    $("#subsistence").prop("checked", true);
+                    $("#subsamt").show();
+                } else
+                if (hassubs == "off")
+                {
+                    $("#subsistence").prop("checked", false);
+                    $("#subsamt").val("0");
+                    $("#subsamt").hide();
+                }
+                if (haspx == "on")
+                {
+                    $("#passenger").prop("checked", true);
+                    $("#passnum").show();
+                } else
+                if (haspx == "off")
+                {
+                    $("#passenger").prop("checked", false);
+                    $("#passnum").val("0");
+                    $("#passnum").hide();
+                }
+            }
+
+
+        </script>
+
+        <style>
+            /* The switch - the box around the slider */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 80px;
+                height: 55px;
+            }
+
+            /* Hide default HTML checkbox */
+            .switch input {display:none;}
+
+            /* The slider */
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            input:checked + .slider {
+                background-color: #2196F3;
+            }
+
+            input:focus + .slider {
+                box-shadow: 0 0 1px #2196F3;
+            }
+
+            input:checked + .slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+
+            /* Rounded sliders */
+            .slider.round {
+                border-radius: 34px;
+            }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }  
+
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <header class="page-header">
+                <nav class="navbar mega-menu" role="navigation">
+                    <div class="container-fluid">
+                        <div class="clearfix navbar-fixed-top">
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                            </button>
+                            <a class="page-logo" id="index" href="/index.php">
+                                <img src="../assets/global/img/customs logo no back.png" alt="" height="400"/>                          
+                                <img src="../assets/global/img/OVERTIME-APP-LOGO.png" alt=""/>
+                            </a>
+                            <div class="topbar-actions">
+                                <div class="btn-group-img btn-group">
+                                    <button class="btn btn-sm md-skip dropdown-toggle" type="button" data-toggle="dropdown" data-close-others="true" data-hover="dropdown">
+                                        <span>Hi,<?php echo $_SESSION['firstname']; ?></span>
+                                    </button>
+                                    <ul class="dropdown-menu-v2" role="menu">
+                                        <li>
+                                            <a href="changepassword">
+                                                <i class="icon-user"></i> Change Password
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="logout">
+                                                <i class="icon-key"></i> Log Out 
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="">
+                                                <i class="icon-briefcase"></i> <?php echo $_SESSION['user_roles']; ?>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                        
+                        </div>                       
+                        <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse"  >
+                            <ul class="nav navbar-nav" >
+                                <li class="dropdown dropdown-fw dropdown-fw-disabled active open selected">
+                                    <a class="text-uppercase" href="./index.php">
+                                        <i class="icon-home"></i> Home 
+                                    </a>      
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/editpayment">Edit/Amend Payment</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/disburseprn">Generate PRN</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/editprn">Reassign PRN</a>
+                                </li>
+                                <li class="dropdown dropdown-fw dropdown-fw-disabled">
+                                    <a class="text-uppercase" href="javascript:;">
+                                        Reports</a>
+                                    <ul class="dropdown-menu dropdown-menu-fw">
+                                        <li class="dropdown more-dropdown-sub ">
+                                            <a href="javascript:;">Payment Reports</a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/report/POTPayslips">POT Pay Slips</a></li>
+                                                <li><a href="/report/PotEmployeeSummary">Employee Summary</a></li>
+                                                <li><a href="/report/POTPaymentByEntityCombined">Payments By Entity Combined</a></li>
+                                                <li></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>                      
+                    </div>                
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <div class="page-content">
+                    <div class="page-content-row">
+                        <div class="col-md-3">
+                            <div class="page-sidebar">
+                                <div class=" col-md-12 ">
+                                    <div class="dashboard-stat dashboard-stat-v2 green" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" ></span>
+                                            </div>
+                                            <div class="desc"><span class="glyphicon glyphicon-barcode"></span>  Company Id </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 blue" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span class="glyphicon glyphicon-usd"></span> <span data-value="2" id="submitterbalance" style="font-size: xx-large" data-counter="counterup">0</span>
+                                            </div>
+                                            <div class="desc">Company Balance</div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                <center>
+                                    <a class="btn btn-outline blue" href="../../index.php">back to main page</a>                                     
+                                </center>
+                                <div class="pillwrapper" id="pillcontainer">
+                                    <ul class="nav nav-pills nav-stacked" id="pillwrapper" >                                   
+                                    </ul>   
+                                </div>
+                            </div>                        
+                        </div>
+                        <div class="col-md-9">
+                            <div class="page-content-col-8"> 
+                                <div class="panel panel-info" >
+                                    <div class="panel-heading">
+                                        <center>
+                                            <h3><label id="lblBillRef" class="label label-info"></label>&nbsp;&nbsp; &nbsp;<label id="lblBillFormNum" style="display:none" class="label label-info" ></label></h3>
+                                        </center>
+                                    </div>
+                                </div>
+                                <div class="portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="caption"><em class="fa fa-group"></em>Create Payment</div>
+                                        <div class="tools">
+                                            <a title="" class="collapse" href="javascript:;" data-original-title=""> </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body form">
+                                        <form method="post" action="" id="paymentform"  >
+                                            <div class="form-body">
+                                                <div class="row center-block">                                                        
+                                                    <div class="col-xs-12">                                                        
+                                                        <?php
+                                                        include 'Views/Shared/Controls/CompanySearch/search-form.php';
+                                                        ?>                         
+                                                    </div>
+                                                </div>
+                                                <div class="row center-block">
+                                                    <center id="addcontrols">                                                                                                                           
+
+                                                    </center>
+                                                    <br>
+                                                    <div id='container' >                                                      
+                                                    </div> 
+                                                </div>
+                                                <center id="submitcontrol">   
+
+                                                </center>
+                                                <div class="col-xs-12" style="font-size: medium">
+                                                    { val_PRN } <br>
+                                                    { val_SelfPay } <br>
+                                                    { val_CompanyBalance } <br>
+                                                    { val_Insufficient }<br>
+                                                    { val_NoRecords }
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            { foot }
+        </div> 
+    </body>
+</html>

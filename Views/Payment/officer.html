@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Data Processing Department | Customs Overtime Application</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link href="//fonts.googleapis.com/css?family=Oswald:400,300,700" rel="stylesheet" type="text/css">
+        <link href="../../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>        
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet" type="text/css">
+        <link href="../../assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/global/plugins/bootstrap-switch_old/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css">
+        <link id="style_components" href="../../assets/global/css/components.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/global/css/plugins.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/layouts/layout5/css/layout.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/layouts/layout5/css/custom.min.css" rel="stylesheet" type="text/css">
+        <link href="admin_5/favicon.ico" rel="shortcut icon">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+        <style>
+            /* The switch - the box around the slider */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 80px;
+                height: 55px;
+            }
+
+            /* Hide default HTML checkbox */
+            .switch input {display:none;}
+
+            /* The slider */
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            input:checked + .slider {
+                background-color: #2196F3;
+            }
+
+            input:focus + .slider {
+                box-shadow: 0 0 1px #2196F3;
+            }
+
+            input:checked + .slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+
+            /* Rounded sliders */
+            .slider.round {
+                border-radius: 34px;
+            }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }   
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#passnum").hide();
+                document.getElementById("searchcomp").focus();
+                $('.search-boxcomp input[type="text"]').on("keyup input", function () {
+                    /* Get input value on change */
+                    var inputVal = $(this).val();
+                    var resultDropdown = $(this).siblings(".resultcomp");
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    if (inputVal.length) {
+                        if (isalpha.test(inputVal))
+                        {
+                            $.get("Views/Shared/Controls/CompanySearch/backend-search.php?type=" + "name", {term: inputVal}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        } else
+                        if (isnum.test(inputVal))
+                        {
+                            $.get("Views/Shared/Controls/CompanySearch/backend-search.php?type=" + "companyid", {term: inputVal}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        }
+
+                    } else {
+                        resultDropdown.empty();
+                    }
+                });
+
+                // Set search input value on click of result item
+                $(document).on("click", ".resultcomp p", function () {
+                    $(this).parents(".search-boxcomp").find('input[type="text"]').val($(this).text());
+                    $test = document.getElementById('searchcomp').value;
+
+                    if ($test == "") {
+                                document.getElementById("txtHintcomp").innerHTML = "";
+                                return;
+                        } else {
+                                if (window.XMLHttpRequest) {
+                                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                                        xmlhttp = new XMLHttpRequest();
+                                } else {
+                                        // code for IE6, IE5
+                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                }
+                                xmlhttp.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                                document.getElementById("txtHintcomp").innerHTML = this.responseText;
+                                        }
+                                };
+                                xmlhttp.open("GET", "Views/Shared/Controls/CompanySearch/getsummary.php?q=" + $test, true);
+                                xmlhttp.send();
+                        }
+                    $(this).parent(".result").empty();
+                    //alert('test');
+                });
+            }
+
+            );
+        </script>   
+        <script>
+            $(function () {
+                $('input#InspectionDateStart').datepicker({dateFormat: 'yy-mm-dd'});
+                $('input#InspectionDateEnd').datepicker({dateFormat: 'yy-mm-dd'});
+            });
+
+            function showpassnum() {
+                //alert("hello");
+                var px = document.getElementById('passenger');
+                var test = document.getElementById('passnum');
+
+                if (px.checked == true)
+                {
+                    $("#passnum").show();
+
+                    // alert("is checked");
+                } else
+                if (px.checked == false)
+                {
+                    $("#passnum").hide();
+                }
+
+            }
+
+        </script>
+    </head>
+
+    <body>
+        <div class="portlet box blue">
+            <div class="portlet-title text-uppercase">
+                <center>
+                    <h4 >Overtime Payment Application Form</h4>   
+                </center>               
+            </div>
+            <div class="portlet-body form">
+                <div class="panel panel-info">
+                    <div class="panel-heading text-uppercase"><h5>Welcome to your overtime application portal, { first_name }</h5></div>
+                </div>
+                <div class="form-body">
+                    <form method="post" >
+                        <div id="alerts" style="color:red">{ alerts }</div>
+                        <div class="panel-body">
+                            <div class="row center-block">
+                                <?php
+                                include 'Views/Shared/Controls/CompanySearch/search-form.php';
+                                ?>  
+                                <div class="col-xs-2">
+
+                                </div>
+                                <div class="col-xs-8">
+                                    <label>Inspection start</label>
+                                    <input type = "text" class="form-control" name = "InspectionDateStart" id = "InspectionDateStart" required placeholder="YYYY-MM-DD" autocomplete="off">
+                                    <label>Inspection end</label>
+                                    <input type = "text" class="form-control" name = "InspectionDateEnd" id = "InspectionDateEnd" required placeholder="YYYY-MM-DD" autocomplete="off">
+                                    <label> Distance</label> 
+                                    <input id="distance" name="distance" class="form-control" autocomplete="off" placeholder="Distance in km" required>
+                                    <label> Hours</label> 
+                                    <input id="hours" name="hours" class="form-control" autocomplete="off" placeholder="Overtime hours" required>
+                                    <label>PRN #</label>
+                                    <input id="PRN" name="PRN" class="form-control" placeholder="Optional">
+                                    <label> Address</label> 
+                                    <input id="searchTextField" name="address" class="form-control" autocomplete="off" placeholder="Inspection address" required>
+                                    <p>Subsistence ?</p>
+                                    <label class="switch">
+                                        <input class="checkbox"  type="checkbox" id="subsistence" name="subsistence">
+                                        <span class="slider round"></span>
+                                    </label> 
+                                    <p>Passenger ?</p>
+                                    <label class="switch" >
+                                        <input class="checkbox"  type="checkbox" id="passenger" name="passenger" onclick='showpassnum()'>
+                                        <span class="slider round"></span>
+                                    </label> 
+                                    <label id='lblpassnum' style="display:none"> Number of Passengers</label> 
+                                    <input id="passnum" name="passnum" class="form-control" placeholder="Enter # of passengers" ><br>
+                                </div>
+                                <div class="col-xs-2">
+
+                                </div>
+                            </div>
+                        </div>
+                        <input id="companyId" name="companyId" type="hidden">
+                        <input id="entityBalance" name="entityBalance" type="hidden">
+                        <input id="billRef" name="billRef" type="hidden">
+                        <input id="billFormNum" name="billFormNum" type="hidden">
+                        <center>
+                            <button type="submit" name="btn-create" id="btn-create" class="btn btn-default blue">Submit Application</button>  
+                        </center>                       
+                    </form>    
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>
