@@ -84,7 +84,7 @@ class MakeDepositController extends PermissionController {
             if ($varid != "") {
                 //If the company is making deposit for the first time
                 if ($depinst->IfExists($varid) === 0) {
-                    $this->Asycuda = $depinst->ASYCUDA = $_POST["ASYCUDANum"];
+                    $asycuda = $this->Asycuda = $depinst->ASYCUDA = $_POST["ASYCUDANum"];
                     $CompanyName = $depinst->CompanyName = $_POST["CompName"];
                     $depinst->Comments = $comments = 'New Deposit Account';
                     $depamount = number_format($_POST["Deposit"], 2, '.', '');
@@ -111,6 +111,7 @@ class MakeDepositController extends PermissionController {
                             //commit record to transaction audit table and user transaction audit table
                             $audinst->CreateUserAuditRecord($tranid, $User, $AudtDesc);
                             $audinst->CreateTransAuditRecord($tranid, $TranDesc, $username, "DEP", $depamount, $varid);
+                            $audinst->CreateDepositTransactionRecord($tranid, $asycuda, $TranDesc, $username, "DEP", $depamount, $varid);
 
                             $token = '<br><br><span class="label label-success">Company Id</span> ' . '<span class="label label-info"> ' . $varid . '</span><br><br><br>' .
                                     '<span class="label label-success">Company Name</span> ' . '<span class="label label-info"> ' . $CompanyName . '</span><br><br><br>' .
@@ -133,7 +134,7 @@ class MakeDepositController extends PermissionController {
                         $template->publish();
                     }
                 } else if ($depinst->IfExists($varid) == 1) {
-                    $this->Asycuda = $depinst->ASYCUDA = $_POST["ASYCUDANum"];
+                    $asycuda = $this->Asycuda = $depinst->ASYCUDA = $_POST["ASYCUDANum"];
                     $CompanyName = $depinst->CompanyName = $_POST["CompName"];
                     $depinst->Comments = $comments = $_POST["Comments"];
                     $depamount = number_format($_POST["Deposit"], 2, '.', '');
@@ -152,11 +153,12 @@ class MakeDepositController extends PermissionController {
                         $depinst->EditDeposit($varid);
                         if ($depinst->auditok == 1) {
                             $tranid = $audinst->TranId = $audinst->GenerateTimestamp('CMPD');
-                        $AudtDesc = 'Deposit for ' . $varid . ' ASYCUDA ' . $this->Asycuda;
-                            $TranDesc = 'Deposit to ' . $varid . " Amt " . $depamount;
+                            $AudtDesc = 'Deposit for ' . $varid . ' ASYCUDA ' . $this->Asycuda;
+                            $TranDesc = $comments;
                             $User = $username;
                             $audinst->CreateUserAuditRecord($tranid, $User, $AudtDesc);
                             $audinst->CreateTransAuditRecord($tranid, $AudtDesc, $User, "DEP", $depamount, $varid);
+                            $audinst->CreateDepositTransactionRecord($tranid, $asycuda, $TranDesc, $username, "DEP", $depamount, $varid);
 
                             $token = '<br><br><span class="label label-success">Company Id</span> ' . '<span class="label label-info"> ' . $varid . '</span><br><br><br>' .
                                     '<span class="label label-success">Company Name</span> ' . '<span class="label label-info"> ' . $CompanyName . '</span><br><br><br>' .

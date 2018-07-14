@@ -115,7 +115,8 @@ class MakeRefundController extends PermissionController {
                                 $TranDesc = $comments;
                                 $User = $username;
                                 $audinst->CreateUserAuditRecord($tranid, $User, $AudtDesc);
-                                $audinst->CreateTransAuditRecord($tranid, $TranDesc, $username, "REF", $refamount, $varid);
+                                //$audinst->CreateTransAuditRecord($tranid, $TranDesc, $username, "REF", $refamount, $varid);
+                                $audinst->CreateRefundTransactionRecord($tranid, $TranDesc, $username, "REF", $refamount, $varid);
                                 $token = '<br><br><span class="label label-success">Company Id</span> ' . '<span class="label label-info"> ' . $varid . '</span><br><br><br>' .
                                         '<span class="label label-success">Company Name</span> ' . '<span class="label label-info"> ' . $companyname . '</span><br><br><br>' .
                                         '<span class="label label-success">Previous Balance</span> ' . '<span class="label label-info"> ' . '$' . number_format($crblnc, '2', '.', ',') . '</span><br><br><br>' .

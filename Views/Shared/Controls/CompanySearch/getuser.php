@@ -56,14 +56,25 @@ if (!empty($result)) {
     }
 }
 
-
-$sqldepsmry = 'SELECT * FROM (
-    SELECT * FROM transactionaudit WHERE CompanyId = (SELECT CompanyId FROM company WHERE CompanyName = "' . $q . '" ) AND TranType="' . $t . '" ORDER BY TranDate DESC LIMIT 10
+if ($t == 'DEP') {
+    $sqldepsmry = 'SELECT * FROM (
+    SELECT * FROM deposittransaction WHERE CompanyId = (SELECT CompanyId FROM company WHERE CompanyName = "' . $q . '" ) AND TranType="' . $t . '" ORDER BY TranDate DESC LIMIT 10
 ) sub
 ORDER BY CompanyId ASC';
-$stmt2 = $conn->prepare($sqldepsmry);
-$stmt2->execute();
-$result_array = $stmt2->fetchAll();
+    $stmt2 = $conn->prepare($sqldepsmry);
+    $stmt2->execute();
+    $result_array = $stmt2->fetchAll();
+} else
+if ($t == 'REF') {
+    $sqldepsmry = 'SELECT * FROM (
+    SELECT * FROM refundtransaction WHERE CompanyId = (SELECT CompanyId FROM company WHERE CompanyName = "' . $q . '" ) AND TranType="' . $t . '" ORDER BY TranDate DESC LIMIT 10
+) sub
+ORDER BY CompanyId ASC';
+    $stmt2 = $conn->prepare($sqldepsmry);
+    $stmt2->execute();
+    $result_array = $stmt2->fetchAll();
+}
+
 
 $Address;
 $conn = NULL;
@@ -105,15 +116,13 @@ $conn = NULL;
             echo'<thead><a>' . $payinst->CompanyName . ' Deposit Summary</a> </thead>';
             echo '<tr>'
             . '<th><a>Amount</a></th>'
-            . '<th><a>Date</a></th>'
-            . '<th><a>Time</a></th></tr>';
+            . '<th><a>Asycuda</a></th>';
             if (!empty($result_array)) {
                 foreach ($result_array as $value) {
                     $t = strtotime($value['TranDate']);
                     echo '<tr>' .
                     '<td><a>' . '$' . number_format($value['TranAmt'], 2, '.', ',') . '</a></td>'
-                    . '<td><a>' . date('d-M-y', $t) . '</a></td>'
-                    . '<td><a>' . date('h:i', $t) . '</a></td>' .
+                    . '<td><a>' . $value['Asycuda'] . '</a></td>' .
                     '</tr>';
                 }
             }
@@ -135,7 +144,6 @@ $conn = NULL;
                 }
             }
         }
-        
         ?>
     </table>
 </div>
