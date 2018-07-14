@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        { head }
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#submitpaymenttable').hide();
+                $('#searchcomp').on("keyup input", function () {
+                    /* Get input value on change */
+                    var searchValue = $(this).val();
+                    var resultDropdown = $(".resultcomp");
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    if (searchValue.length) {
+                        if (isalpha.test(searchValue))
+                        {
+                            $.get("Views/Shared/Controls/CompanySearch/backend-search.php?type=" + "name", {term: searchValue}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        } else
+                        if (isnum.test(searchValue))
+                        {
+                            $.get("Views/Shared/Controls/CompanySearch/backend-search.php?type=" + "companyid", {term: searchValue}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        }
+                    } else {
+                        resultDropdown.empty();
+                    }
+                });
+
+                $('#searchemp').on("keyup input", function () {
+                    /* Get input value on change */
+                    var searchValue = $(this).val();
+                    var resultDropdown = $(".resultemp");
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    if (searchValue.length) {
+                        if (isalpha.test(searchValue))
+                        {
+                            $.get("Views/Shared/Controls/EmployeeSearch/backend-search.php?type=" + "name", {term: searchValue}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        } else
+                        if (isnum.test(searchValue))
+                        {
+                            $.get("Views/Shared/Controls/EmployeeSearch/backend-search.php?type=" + "natregno", {term: searchValue}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+
+                            });
+                        }
+                    } else {
+                        resultDropdown.empty();
+                    }
+                });
+
+                $('#myModalAmend').on("keyup", '#searchempmodal, div.searchboxempmodal', function () {
+                    /* Get input value on change */
+                    //alert('hello');
+                    var searchValue = $('#searchempmodal').val();
+                    var resultDropdown = $(".resultemp-modal");
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    if (searchValue.length) {
+                        if (isalpha.test(searchValue))
+                        {
+                            $.get("Views/Shared/Controls/EmployeeSearch/backend-search.php?type=" + "name", {term: searchValue}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        } else
+                        if (isnum.test(searchValue))
+                        {
+                            $.get("Views/Shared/Controls/EmployeeSearch/backend-search.php?type=" + "natregno", {term: searchValue}).done(function (data) {
+                                // Display the returned data in browser
+                                resultDropdown.html(data);
+                            });
+                        }
+                    } else {
+                        resultDropdown.empty();
+                    }
+                });
+
+
+                // Set search input value on click of result item
+                $(document).on("click", ".resultemp-modal p", function () {
+                    $(this).parents(".searchboxempmodal").find('input[type="text"]').val($(this).text());
+                    $srchemp = $('#searchempmodal').val();
+                    if ($srchemp == "") {
+                                document.getElementById("txtHintemp-modal").innerHTML = "";
+                                return;
+                        } else {
+                                if (window.XMLHttpRequest) {
+                                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                                        xmlhttp = new XMLHttpRequest();
+                                } else {
+                                        // code for IE6, IE5
+                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                }
+                                xmlhttp.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                                document.getElementById("txtHintemp-modal").innerHTML = this.responseText;
+                                        }
+
+                                };
+                                xmlhttp.open("GET", "../Views/Shared/Controls/EmployeeSearch/getuser.php?q=" + $srchemp, true);
+                                xmlhttp.send();
+                        }
+                    $(this).parent(".result").empty();
+
+                });
+
+                $("input#inspection-start").datepicker({dateFormat: 'yy-mm-dd'});
+                $("input#inspection-end").datepicker({dateFormat: 'yy-mm-dd'});
+
+                $(document).on("click", ".resultcomp p", function () {
+                    $(this).parents(".search-boxcomp").find('input[type="text"]').val($(this).text());
+                    $(this).parent(".resultcomp").empty();
+                    $('#submitpaymenttable').show();
+                });
+                $(document).on("click", ".resultemp p", function () {
+                    $(this).parents(".search-boxemp").find('input[type="text"]').val($(this).text());
+                    $(this).parent(".resultemp").empty();
+                    $('#submitpaymenttable').show();
+                });
+
+                $(document).on("click", ".unlock", function (e) {
+                    $.get("/unlockpymt?id=" + e.target.id).done(function (data) {
+                        $("#unlockModal").html(data).modal();
+                    });
+                    paymentTable();
+                });
+
+                function paymentTable() {
+                    var startDate = ($('#inspection-start').val()).replace('Start Date', '');
+                    var endDate = ($('#inspection-end').val()).replace('End Date', '');
+                    var employee = $('#searchemp').val();
+                    var company = $('#searchcomp').val();
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    var resultDiv = $('#paymenttable');
+
+                    var payload = {};
+                    if (endDate != '') {
+                        payload['enddate'] = endDate;
+                    }
+                    if (startDate != '') {
+                        payload['startdate'] = startDate;
+                    }
+                    if (company != '') {
+                        payload['compname'] = company;
+                    }
+                    if (employee != '') {
+                        payload['empid'] = employee;
+                    }
+
+                    $.get("/tablepymt?", payload).done(function (data) {
+                        resultDiv.html(data);
+                    });
+                }
+
+                $(document).on("click", "#myModalAmend .resultemp ", function () {
+                    $("#officerid").val();
+                });
+
+                $(document).on("click", ".unlock", function (e) {
+                    $.get("/unlockpymt?id=" + e.target.id).done(function (data) {
+                        $("#unlockModal").html(data).modal();
+
+                    });
+                    paymentTable();
+                });
+
+                function paymentTable() {
+                    var startDate = ($('#inspection-start').val()).replace('Start Date', '');
+                    var endDate = ($('#inspection-end').val()).replace('End Date', '');
+                    var employee = $('#searchemp').val();
+                    var company = $('#searchcomp').val();
+                    var isnum = /[0-9]/;
+                    var isalpha = /[a-zA-Z]/;
+
+                    var resultDiv = $('#paymenttable');
+
+                    var payload = {};
+                    if (endDate != '') {
+                        payload['enddate'] = endDate;
+                    }
+                    if (startDate != '') {
+                        payload['startdate'] = startDate;
+                    }
+                    if (company != '') {
+                        payload['compname'] = company;
+                    }
+                    if (employee != '') {
+                        payload['empid'] = employee;
+                    }
+
+                    $.get("/tablepymt?", payload).done(function (data) {
+                        resultDiv.html(data);
+                    });
+                }
+
+                $(document).on("click", "#submitpaymenttable", function () {
+                    paymentTable();
+                });
+
+
+                function ToggleSubs()
+                {
+                    if ($("#subsistence").is(":checked"))
+                    {
+                        hassubs = 'on';
+                        $("#subsistence").val(hassubs);
+                        $("#subamt").show();
+                        $("#subamt").prop("checked", true);
+
+                    } else
+                    if (!$("#subsistence").is(":checked"))
+                    {
+                        hassubs = 'off';
+                        $("#subsistence").val(hassubs);
+                        $("#subamt").val("0");
+                        $("#subamt").hide();
+                        $("#subamt").prop("checked", false);
+                    }
+                }
+                function TogglePX()
+                {
+                    if ($("#passengers").is(":checked"))
+                    {
+                        haspx = 'on';
+                        $("#passengers").val(haspx);
+                        $("#passnum").show();
+                        $("#passengers").prop("checked", true);
+
+                    } else
+                    if (!$("#passengers").is(":checked"))
+                    {
+                        haspx = 'off';
+                        $("#passengers").val(haspx);
+                        $("#passnum").val("0");
+                        $("#passnum").hide();
+                        $("#passengers").prop("checked", false);
+                    }
+                }
+                //Toggle on and off Passenger option
+                $(document).on("click", "#passengers", function () {
+                    TogglePX();
+                });
+                $(document).on("click", "#subsistence", function () {
+                    ToggleSubs();
+                });
+
+                $(document).on("click", ".edit", function (e) {
+                    $.get("Views/Shared/Controls/ComboSearch/payment-modal.php?id=" + e.target.id).done(function (data) {
+                        $("#myModal").html(data).modal();
+                        TogglePX();
+                        ToggleSubs();
+                    });
+                });
+
+                $(document).on("click", ".amend", function (e) {
+                    $.get("Views/Shared/Controls/ComboSearch/amend-payment-modal.php?id=" + e.target.id).done(function (data) {
+                        $("#myModalAmend").html(data).modal();
+                        $('#passnum').hide();
+                        $('#subamt').hide();
+                    });
+                });
+
+            });
+
+        </script>
+        <style>
+            .modal-header, h4.mdl, .close {
+                background-color: #5cb85c;
+                color:white !important;
+                text-align: center;
+                font-size: 30px;
+            }
+            .modal-footer {
+                background-color: #f9f9f9;
+            }
+            /* The switch - the box around the slider */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 80px;
+                height: 55px;
+            }
+
+            /* Hide default HTML checkbox */
+            .switch input {display:none;}
+
+            /* The slider */
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            input:checked + .slider {
+                background-color: #2196F3;
+            }
+
+            input:focus + .slider {
+                box-shadow: 0 0 1px #2196F3;
+            }
+
+            input:checked + .slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+
+            /* Rounded sliders */
+            .slider.round {
+                border-radius: 34px;
+            }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }  
+
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <header class="page-header">
+                <nav class="navbar mega-menu" role="navigation">
+                    <div class="container-fluid">
+                        <div class="clearfix navbar-fixed-top">
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                            </button>
+                            <a class="page-logo" id="index" href="/index.php">
+                                <img src="../assets/global/img/customs logo no back.png" alt="" height="400"/>                          
+                                <img src="../assets/global/img/OVERTIME-APP-LOGO.png" alt=""/>
+                            </a>
+                            <div class="topbar-actions">
+                                <div class="btn-group-img btn-group">
+                                    <button class="btn btn-sm md-skip dropdown-toggle" type="button" data-toggle="dropdown" data-close-others="true" data-hover="dropdown">
+                                        <span>Hi,<?php echo $_SESSION['firstname']; ?></span>
+                                    </button>
+                                    <ul class="dropdown-menu-v2" role="menu">
+                                        <li>
+                                            <a href="changepassword">
+                                                <i class="icon-user"></i> Change Password
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="logout">
+                                                <i class="icon-key"></i> Log Out 
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="">
+                                                <i class="icon-briefcase"></i> <?php echo $_SESSION['user_roles']; ?>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                        
+                        </div>                       
+                        <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse"  >
+                            <ul class="nav navbar-nav" >
+                                <li class="dropdown dropdown-fw dropdown-fw-disabled active open selected">
+                                    <a class="text-uppercase" href="./index.php">
+                                        <i class="icon-home"></i> Home 
+                                    </a>      
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/createpayment">Make Payment</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/disburseprn">Generate PRN</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/editprn">Reassign PRN</a>
+                                </li>
+                            </ul>
+                        </div>                      
+                    </div>                
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <div class="page-content">
+                    <div class="page-content-row">
+                        <div class="col-md-3">
+
+                        </div>
+                        <div class="col-md-9">
+                            <div class="page-content-col-8"> 
+
+                                <div class="portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="caption"><em class="fa fa-group"></em>Edit Payment</div>
+                                        <div class="tools">
+                                            <a title="" class="collapse" href="javascript:;" data-original-title=""> </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body form">
+                                        <form method="post" action="#">
+                                            <div class="form-body">
+                                                <div class="row center-block">                                                        
+                                                    <div class="col-xs-6">                                                        
+                                                        <?php
+                                                        include 'Views/Shared/Controls/CompanySearch/search-form.php';
+                                                        ?>
+                                                    </div>
+                                                    <div class="col-xs-6">                                                        
+                                                        <?php
+                                                        include 'Views/Shared/Controls/EmployeeSearch/search-form.php';
+                                                        ?>
+                                                    </div>
+                                                    <div class="col-xs-6 text-center row">
+                                                        <input type="button" class="btn btn-default" id="inspection-start" value="Start Date">
+                                                    </div>
+                                                    <div class="col-xs-6 text-center row">
+                                                        <input type="button" class="btn btn-default" id="inspection-end" value="End Date">
+                                                    </div>
+                                                    <div class="col-xs-12 row text-center">
+                                                        <input id="submitpaymenttable" class="btn btn-info btn-md" value="Show Results">
+                                                    </div>
+                                                    <div class="col-xs-12 row">
+                                                        <div class="table-responsive">
+                                                            <table class="table" id="paymenttable">
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                        <div class="modal fade" id="myModal" role="dialog"></div>
+                                        <div class="modal fade" id="myModalAmend" role="dialog"></div>
+                                        <div class="modal fade" id="unlockModal" role="dialog"></div>
+                                    </div>
+                                    <div class="col-xs-12" style="font-size: medium">
+                                    
+                                        { val_CompanyBalance } <br>
+                                        { val_Insufficient }<br>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            { foot }
+        </div> 
+    </body>
+</html>

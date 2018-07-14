@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        { head } 
+    </head>
+    <body>
+        <div class="wrapper">
+            <header class="page-header">
+                <nav class="navbar mega-menu" role="navigation">
+                    <div class="container-fluid">
+                        <div class="clearfix navbar-fixed-top">
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                            </button>
+                            <a class="page-logo" id="index" href="/index.php">
+                                <img src="../assets/global/img/customs logo no back.png" alt="" height="400"/>                          
+                                <img src="../assets/global/img/OVERTIME-APP-LOGO.png" alt=""/>
+                            </a>
+                            <div class="topbar-actions">
+                                <div class="btn-group-img btn-group">
+                                    <button class="btn btn-sm md-skip dropdown-toggle" type="button" data-toggle="dropdown" data-close-others="true" data-hover="dropdown">
+                                        <span>Hi,<?php echo $_SESSION['firstname']; ?></span>
+                                    </button>
+                                    <ul class="dropdown-menu-v2" role="menu">
+                                        <li>
+                                            <a href="/changepassword">
+                                                <i class="icon-user"></i> Change Password
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/logout">
+                                                <i class="icon-key"></i> Log Out 
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="">
+                                                <i class="icon-briefcase"></i> <?php echo $_SESSION['user_roles']; ?>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                        
+                        </div>                       
+                        <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse"  >
+                            <ul class="nav navbar-nav" >
+                                <li class="dropdown dropdown-fw dropdown-fw-disabled active open selected">
+                                    <a class="text-uppercase" href="../index.php"><i class="icon-home"></i> Home</a>      
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/adminconsole"><i class="glyphicon glyphicon-briefcase"></i>Admin Console</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/edituser"> <i class="glyphicon glyphicon-pencil"></i>Update User Profile</a>
+                                </li>
+                            </ul>
+                        </div>                      
+                    </div>                
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <div class="page-content">
+                    <div class="page-content-row">
+                        <div class="col-md-3">
+                            <div class="page-sidebar">
+
+                                <div class=" col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 blue" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" class="glyphicon glyphicon-signal"> </span>
+                                            </div>
+                                            <div class="desc"> Active Companies </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 purple" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" class="glyphicon glyphicon-signal"> </span>
+                                            </div>
+                                            <div class="desc"> Zero Balances  </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <center>
+                                    <a class="btn btn-outline blue" href="../../index.php">back to main page</a>    
+                                </center>
+                            </div>   
+                        </div>
+                        <div class="col-md-9">
+                            <div class="portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><em class="fa fa-group"></em><h4>Create System User</h4></div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <form method="post" id="createusr" name="createuser" >
+                                        <div class="row">
+                                            <div class="col-md-4">
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                National Registration No<input type="text" id="Natregno" name="Natregno" class="form-control" autocomplete="off" value="{ Natregno }"  />
+                                                User Name<input type="text" name="UserName" id="UserName" class="form-control" value="{ UserName }" />
+                                                Default Password<input type="text" name="Password" id="Password" class="form-control" />
+                                                Display Name<input type="text" name="FirstName" id="FirstName" class="form-control" value="{ FirstName }" />
+                                                Roles <select name="Roles" id="Roles" class="form-control" >
+                                                    <option></option>
+                                                    { roles }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+
+                                            </div>
+                                            <span style="color:red" > { error }</span>
+
+                                        </div>                                       
+                                        <br>
+                                        <center>
+                                            <button type="submit" name="btn-create" id="btn-create" class="btn btn-default blue">Create New User</button>
+                                        </center>
+                                        <br>
+                                    </form> 
+                                </div>
+                            </div>
+                        </div>                 
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        { foot }
+    </body>
+</html>

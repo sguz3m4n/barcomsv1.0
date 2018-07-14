@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        { head }
+    </head>
+    <body>
+        <div class="wrapper">
+            <header class="page-header">
+                <nav class="navbar mega-menu" role="navigation">
+                    <div class="container-fluid">
+                        <div class="clearfix navbar-fixed-top">
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                            </button>
+                            <a class="page-logo" id="index" href="/index.php">
+                                <img src="../assets/global/img/customs logo no back.png" alt="" height="400"/>                          
+                                <img src="../assets/global/img/OVERTIME-APP-LOGO.png" alt=""/>
+                            </a>
+                            <div class="topbar-actions">
+                                <div class="btn-group-img btn-group">
+                                    <button class="btn btn-sm md-skip dropdown-toggle" type="button" data-toggle="dropdown" data-close-others="true" data-hover="dropdown">
+                                        <span>Hi,<?php echo $_SESSION['firstname']; ?></span>
+                                    </button>
+                                    <ul class="dropdown-menu-v2" role="menu">
+                                        <li>
+                                            <a href="changepassword">
+                                                <i class="icon-user"></i> Change Password
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="logout">
+                                                <i class="icon-key"></i> Log Out 
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="">
+                                                <i class="icon-briefcase"></i> <?php echo $_SESSION['user_roles']; ?>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                        
+                        </div>                       
+                        <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse"  >
+                            <ul class="nav navbar-nav" >
+                                <li class="dropdown dropdown-fw dropdown-fw-disabled active open selected">
+                                    <a class="text-uppercase" href="../index.php"><i class="icon-home"></i> Home</a>      
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/createuser"> <i class="glyphicon glyphicon-pencil"></i>New Profile</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/edituser"> <i class="glyphicon glyphicon-pencil"></i>Edit Profile</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/managetravel"><i class="glyphicon glyphicon-folder-close"></i>Manage Travel</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/manageother"><i class="glyphicon glyphicon-folder-close"></i>Manage Other</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/managepot"><i class="glyphicon glyphicon-folder-close"></i>Manage Overtime</a>
+                                </li>
+                                <li>
+                                    <a class="text-uppercase" href="/admin/processpayroll"><i class="glyphicon glyphicon-folder-close"></i>Process Payroll</a>
+                                </li>
+                            </ul>
+                        </div>                      
+                    </div>                
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <div class="page-content">
+                    <div class="page-content-row">
+                        <div class="col-md-3">
+                            <div class="page-sidebar">
+
+                                <div class=" col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 blue" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" class="glyphicon glyphicon-signal"> </span>
+                                            </div>
+                                            <div class="desc"> Active Companies </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="dashboard-stat dashboard-stat-v2 purple" >
+                                        <div class="visual">
+                                            <i class="fa fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <div class="number">
+                                                <span data-value="2" id="submittercompany" style="font-size: xx-large"  data-counter="counterup" class="glyphicon glyphicon-signal"> </span>
+                                            </div>
+                                            <div class="desc"> Zero Balances  </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <center>
+                                    <a class="btn btn-outline blue" href="../../index.php">back to main page</a>    
+                                </center>
+                            </div>   
+                        </div>
+                        <div class="col-md-9">
+                            <div class="page-content">                   
+                                <h2>
+                                    Admin Console
+                                </h2>
+                                <ul>
+                                    <li><h3>Process Payroll</h3></li>
+                                    <li><h3>Create new Overtime App users</h3></li>
+                                    <li><h3>Update Overtime App users</h3></li>
+                                    <li><h3>Set User Permissions</h3></li>
+                                    <li> <h3>Set Overtime Rates</h3></li>
+                                    <li><h3>Set Travel Rates</h3></li>
+                                    <li><h3>Set Other/Holiday Rates</h3></li>
+                                </ul>
+                            </div>   
+                        </div>                 
+                        <br>
+                    </div>
+                </div>
+            </div>          
+        </div>
+        { foot }
+    </body>
+</html>
