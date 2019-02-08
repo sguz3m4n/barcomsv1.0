@@ -1,11 +1,10 @@
 <?php
-
  function conn() {
   $servername = "localhost";
   $username = "root";
   $password = "P@ssw0rd";
   $dbname = "barcoms";
-  $port=3307;
+  $port=3306;
   // Create connection
   try {
   $conn = new \PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $password);
