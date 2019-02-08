@@ -40,7 +40,7 @@ if(!isset($_SESSION['theme'])){
 
     
     $theme = "base.css";
-    // Christmas
+   /* // Christmas
     if($date>=$christmas_start && $date<=$christmas_end){
         $theme = "christmas.css";
     }
@@ -51,7 +51,7 @@ if(!isset($_SESSION['theme'])){
     //Easter
     elseif($date>=$easter_start && $date<=$easter_end){
         $theme = "easter.css";
-    }
+    }*/
     $_SESSION['theme'] = $theme;
 }
 
