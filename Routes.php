@@ -34,8 +34,8 @@ return [
     [['GET', 'POST'], '/disburseprn', ['Controllers\DisburseController', 'display']],
     [['GET', 'POST'], '/employee', ['Controllers\EmployeeController', 'display']],
 
-    [['GET', 'POST'], '/report/{name:PotEmployeeSummary|POTPaymentByEntityCombined|POTPayslips}', ['Controllers\PaymentsReportController', 'display']],
-    [['GET', 'POST'], '/report/{name:PotEntityDetail|PotEntitySummary|PrnEntity|RefundEntity|PotEmployeeDetails|POTPRNByEntity|POTRefundByEntity|CompanyListing|EmployeeListing|ReceiptsByEntityCombined|ReceiptsByEntityIndividual}', ['Controllers\ManagersReportController', 'display']],
+    [['GET', 'POST'], '/report/{name:POTEmployeeSummary|POTPaymentByEntityCombined|POTPaymentByEntityIndividual|POTPayslips}', ['Controllers\PaymentsReportController', 'display']],
+    [['GET', 'POST'], '/report/{name:POTEntityDetails|POTEntitySummary|PrnEntity|RefundEntity|PotEmployeeDetails|POTPRNByEntity|POTRefundByEntity|CompanyListing|EmployeeListing|ReceiptsByEntityCombined|ReceiptsByEntityIndividual}', ['Controllers\ManagersReportController', 'display']],
     ['GET', '/index.php', ['Controllers\Homepage', 'display']],
     ['GET', '/', ['Controllers\Homepage', 'display']],
     [['GET', 'POST'], '/login', ['Controllers\Login', 'show']],
