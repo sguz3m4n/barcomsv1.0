@@ -6,7 +6,7 @@
     "require": {
         "php": ">=7.0.0",
         "filp/whoops": "~2.1",
-        "nikic/fast-route": "^1.2",
+        "nikic/fast-route": "^1.3",
         "wazaari/monolog-mysql": "1.0.3",
         "monolog/monolog": "^1.23",
         "jaspersoft/rest-client": "v2.0.0"

@@ -74,13 +74,13 @@ class EditPaymentController extends MakePaymentController {
                     $varhaspx = TRUE;
                     $payinst->Passengers = "Y";
                     $this->PassNum = $payinst->NumberPx = $_POST['passnum'];
-                      // $subsidy = $this->PassSubsidy = 0.00;
-                    /*if ($this->PassNum == 1) {
-                        $this->PassSubsidy = 2.19;
-                    }
-                    if ($this->PassNum > 1) {
-                        $this->PassSubsidy = 2.28;
-                    }*/
+                    // $subsidy = $this->PassSubsidy = 0.00;
+                    /* if ($this->PassNum == 1) {
+                      $this->PassSubsidy = 2.19;
+                      }
+                      if ($this->PassNum > 1) {
+                      $this->PassSubsidy = 2.28;
+                      } */
                 } else {
                     $varhaspx = FALSE;
                     $payinst->Passengers = "N";
@@ -99,15 +99,15 @@ class EditPaymentController extends MakePaymentController {
             $this->TotalAmountEarned = $payinst->TotalAmount = $total = $varTravelEarned + $varSubsistenceEarned + $varOTEarned + $this->PassSubsidy;
             $this->GrandTotal = $this->TotalAmountEarned + $this->GrandTotal;
 
-            $validateme = ["CompanyBalance", "Sufficient"];
+            $validateme = ["CompanyBalance", "SelfPay", "Sufficient"];
             $this->ValidationEngine($validateme);
-            if (($this->CompanyBalanceIsValid) && ($this->IsSufficient)) {
+            if (($this->CompanyBalanceIsValid) && ($this->IsSufficient) && ($this->SelfIsValid)) {
                 //Reverse payment already made
                 $depinst->PreviousBalance = $compbal;
                 $this->NewCompBal = $compbal + ($refundamt * 2);
                 //Reverse payment already made
                 $payinst->UpdatePaymentTransaction($tranid);
-                $AudtDesc = 'Update Payment for ' . $compid. ' Amt ' . $total;
+                $AudtDesc = 'Update Payment for ' . $compid . ' Amt ' . $total;
                 #$TranDesc = 'Update Payment to ' . $compid . ' Amt ' . $total;
                 $User = $username;
                 if ($payinst->auditok == 1) {
@@ -137,6 +137,7 @@ class EditPaymentController extends MakePaymentController {
                 $template->replace("title", "Create New Bill Payment");
                 $template->replace("val_CompanyBalance", $_SESSION['$companybalwrapper']);
                 $template->replace("val_Insufficient", $_SESSION['$insuffwrapper']);
+                $template->replace("val_SelfPay", $_SESSION['$selfidwrapper']);
                 $template->publish();
             }
         } else
