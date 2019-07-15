@@ -148,6 +148,7 @@ class EditPaymentController extends MakePaymentController {
             $template->replace("title", "Create New Bill Payment");
             $template->replace("val_CompanyBalance", "");
             $template->replace("val_Insufficient", "");
+            $template->replace("val_SelfPay","");
             $template->publish();
         }
     }
